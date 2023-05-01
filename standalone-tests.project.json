@@ -1,0 +1,12 @@
+{
+	"name" : "Karen",
+	"tree" : {
+		"$path" : "Src",
+		"Tests" : {
+			"$path" : "Tests"
+		},
+		"DevPackages" : {
+			"$path" : "DevPackages"
+		}
+	}
+}
