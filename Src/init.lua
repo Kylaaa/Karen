@@ -45,12 +45,13 @@
 ]]
 
 local _instance = nil
+local _instances = {}
 
 local SingletonManager = {}
 SingletonManager.__index = SingletonManager
 
-function SingletonManager.new()
-	if _instance then
+function SingletonManager.new(id : string?)
+	if _instance and not id then
 		warn("Creating multiple instances of the SingletonManager")
 	end
 
@@ -63,15 +64,24 @@ function SingletonManager.new()
 		singletons = {}, -- { string, table }
 	}
 	setmetatable(self, SingletonManager)
-	_instance = self
+
+	-- create a global accessor for this instance
+	if id then
+		_instances[id]
+	else
+		_instance = self
+	end
 	return self
 end
 
-function SingletonManager.getInstance()
-	if not _instance then
-		error("Karen hasn't been initialized yet. Create one first with Karen.new()")
+function SingletonManager.getInstance(id : string?)
+	if id then
+		assert(_instances[id] ~= nil)
+		return _instances[id]
+	else
+		assert(_instance ~= nil, "Karen hasn't been initialized yet. Create one first with Karen.new()")
+		return _instance	
 	end
-	return _instance
 end
 
 function SingletonManager:registerSingleton(moduleScript : ModuleScript, dependencies : { ModuleScript })
@@ -113,7 +123,7 @@ function SingletonManager:initialize()
 		return values
 	end
 	
-	--
+	-- initialize all of the modules
 	for _, module : ModuleScript in ipairs(self.singletonModules) do
 		local singleton = self.singletons[module.Name]
 		if not singleton then

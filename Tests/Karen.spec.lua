@@ -68,6 +68,19 @@ return function()
 			local sm = Karen.new()
 			expect(sm).to.equal(Karen.getInstance())
 		end)
+
+		it("should allow for a library to create a custom accessor", function()
+			local sm = Karen.new()
+			local librarySM = Karen.new("foo")
+
+			local sm2 = Karen.getInstance()
+			local librarySM2 = Karen.getInstance("foo")
+
+			expect(sm).to.equal(sm2)
+			expect(librarySM).to.equal(librarySM2)
+			expect(sm).to.never.equal(librarySM)
+			expect(sm2).to.never.equal(librarySM2)
+		end)
 	end)
 
 	describe("get()", function()
