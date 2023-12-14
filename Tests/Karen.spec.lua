@@ -50,9 +50,17 @@ return function()
 				TestsFolder.A,
 			})
 
-			expect(function()
+			local success, err = pcall(function()
 				sm:initialize()
-			end).to.throw()
+			end)
+
+			local success, err = pcall(function()
+				sm:initialize()
+			end)
+
+			local expectedErrMessagePrefix = "Circular dependency detected"
+			expect(success).to.equal(false)
+			expect(err:find(expectedErrMessagePrefix)).to.never.equal(nil)
 		end)
 	end)
 
