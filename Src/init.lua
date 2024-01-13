@@ -67,7 +67,7 @@ function SingletonManager.new(id : string?)
 
 	-- create a global accessor for this instance
 	if id then
-		_instances[id]
+		_instances[id] = self
 	else
 		_instance = self
 	end
@@ -98,8 +98,7 @@ function SingletonManager:initialize()
 		return #self.dependencies[a] < #self.dependencies[b]
 	end)
 	
-	-- TODO : CHECK FOR CIRCULAR DEPENDENCIES... later
-	local function getDependencies(module : ModuleScript)
+	local function getDependencies(module : ModuleScript, visitedNodes : {})
 		-- lookup if there are any dependencies
 		local dependencies = self.dependencies[module]
 		local values = {}
@@ -108,8 +107,21 @@ function SingletonManager:initialize()
 			for _ , module : ModuleScript in ipairs(dependencies) do
 				local initializedValue = self.singletons[module.Name]
 				if not initializedValue then
+					-- check if we're trapped in a loop
+					if visitedNodes[module.Name] then
+						-- found a loop, try to tell people how we got here
+						local nodes = {}
+						for name, _ in pairs(visitedNodes) do
+							table.insert(nodes, name)
+						end
+						local message = "Circular dependency detected in group (%s)"
+						error(string.format(message, table.concat(nodes, ", ")))
+					else
+						visitedNodes[module.Name] = true
+					end
+
 					-- grab its dependencies
-					local dependencies = getDependencies(module)
+					local dependencies = getDependencies(module, visitedNodes)
 					local manager = require(module)
 					initializedValue = manager.new(dependencies)
 					
@@ -128,7 +140,8 @@ function SingletonManager:initialize()
 		local singleton = self.singletons[module.Name]
 		if not singleton then
 			local manager = require(module)
-			local dependencies = getDependencies(module)
+			local visitedNodes = {}
+			local dependencies = getDependencies(module, visitedNodes)
 			self.singletons[module.Name] = manager.new(dependencies)
 		end
 	end

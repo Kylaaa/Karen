@@ -1,9 +1,9 @@
 [package]
 name = "kylaaa/karen"
-version = "0.1.2"
+version = "0.1.4"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 include = ["Src", "default.project.json"]
 
-#[dev-dependencies]
-#testez = "roblox/testez@0.4.1"
+[dev-dependencies]
+testez = "roblox/testez@0.4.1"
