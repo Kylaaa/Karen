@@ -1,6 +1,6 @@
 [package]
 name = "kylaaa/karen"
-version = "0.1.4"
+version = "0.1.5"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 include = ["Src", "default.project.json"]
