@@ -12,7 +12,7 @@ Add <a href="https://wally.run/package/kylaaa/karen">Karen</a> to the dependenci
 
 ```
 [dependencies]
-Karen = "kylaaa/karen@0.1.3"
+Karen = "kylaaa/karen@0.1.5"
 ```
 </details>
 <details>
