@@ -68,8 +68,8 @@ sm:registerSingleton(ManagersFolder.A, {
     ManagersFolder.B
 })
 sm:registerSingleton(ManagersFolder.B, {
-		ManagersFolder.C,
-		ManagersFolder.D
+    ManagersFolder.C,
+    ManagersFolder.D
 })
 sm:registerSingleton(ManagersFolder.C, {})
 sm:registerSingleton(ManagersFolder.D, {})
@@ -110,51 +110,51 @@ local LogManager = {}
 LogManager.__index = LogManager
 
 LogManager.LogLevel = {
-	None = 0,
-	Error = 1,
-	Warning = 2,
-	Message = 3,
-	Trace = 4,
+    None = 0,
+    Error = 1,
+    Warning = 2,
+    Message = 3,
+    Trace = 4,
 }
 
 function LogManager.new(dependencies : {})
-	local cm = dependencies.ConfigurationManager
+    local cm = dependencies.ConfigurationManager
 
-	local lm = {
-		logLevel = cm:getValue("LOGGING_LEVEL"),
-		NewMessage = Signal.new(), -- (logLevel : number, ... : any) -> ()
-	}
-	setmetatable(lm, LogManager)
+    local lm = {
+        logLevel = cm:getValue("LOGGING_LEVEL"),
+        NewMessage = Signal.new(), -- (logLevel : number, ... : any) -> ()
+    }
+    setmetatable(lm, LogManager)
 
-	cm.Updated:Connect(function()
-		lm.LogLevel = cm:getValue("LOGGING_LEVEL")
-	end)
+    cm.Updated:Connect(function()
+        lm.LogLevel = cm:getValue("LOGGING_LEVEL")
+    end)
 
-	return lm
+    return lm
 end
 
 function LogManager:log(level : number, ...)
-	assert(level ~= LogManager.LogLevel.None, "level cannot be `None`")
+    assert(level ~= LogManager.LogLevel.None, "level cannot be `None`")
 
-	if level <= self.LogLevel then
-		self.NewMessage:fire(level, ...)
-	end
+    if level <= self.LogLevel then
+        self.NewMessage:fire(level, ...)
+    end
 end
 
 function LogManager:error(...)
-	self:log(LogManager.Error, ...)
+    self:log(LogManager.Error, ...)
 end
 
 function LogManager:warn(...)
-	self:log(LogManager.Warning, ...)
+    self:log(LogManager.Warning, ...)
 end
 
 function LogManager:message(...)
-	self:log(LogManager.Message, ...)
+    self:log(LogManager.Message, ...)
 end
 
 function LogManager:trace(...)
-	self:log(LogManager.Trace, ...)
+    self:log(LogManager.Trace, ...)
 end
 
 return LogManager
